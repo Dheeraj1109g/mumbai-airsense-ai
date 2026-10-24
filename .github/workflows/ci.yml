@@ -12,21 +12,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install uv and dependencies
+      - name: Install dependencies
         run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
           uv venv backend/.venv --python 3.11
           uv pip install --python backend/.venv/bin/python -r backend/requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
 
-      - name: Run Alembic Migrations and Database Seeding
+      - name: Run Database Migrations and Seeding
         run: |
           export PYTHONPATH=backend
-          backend/.venv/bin/alembic upgrade head
+          (cd backend && ../backend/.venv/bin/alembic upgrade head)
           backend/.venv/bin/python scripts/seed_database.py
 
       - name: Run Pytest Test Suite
