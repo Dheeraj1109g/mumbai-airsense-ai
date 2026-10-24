@@ -1,0 +1,129 @@
+{
+  "station_id": "MH017",
+  "pollutant": "PM2.5",
+  "test_period": {
+    "start": "2020-05-18",
+    "end": "2020-07-01",
+    "days": 45
+  },
+  "best_model_by_rmse": "prophet",
+  "comparison": {
+    "baseline": {
+      "version_id": 21,
+      "version_tag": "v1.0",
+      "metrics": {
+        "mae": 18.07,
+        "rmse": 18.49,
+        "mape": 187.95,
+        "coverage_95": 95.56,
+        "sample_count": 45,
+        "residual_summary": {
+          "mean": -18.07,
+          "std": 3.94,
+          "skewness": 0.73,
+          "underprediction_rate": 0.0,
+          "overprediction_rate": 100.0
+        },
+        "training_time_seconds": 0.0
+      },
+      "artifact_path": "C:\\Users\\Dheeraj\\OneDrive\\Desktop\\aids project\\models\\saved\\baseline_MH017_pm25.joblib",
+      "predictions_sample": [
+        29.7,
+        29.7,
+        29.7,
+        29.7,
+        29.7,
+        29.7,
+        29.7
+      ]
+    },
+    "arima": {
+      "version_id": 22,
+      "version_tag": "v1.0-ARIMA(1, 1, 1)",
+      "metrics": {
+        "mae": 9.32,
+        "rmse": 9.93,
+        "mape": 101.73,
+        "coverage_95": 100.0,
+        "sample_count": 45,
+        "residual_summary": {
+          "mean": -9.26,
+          "std": 3.58,
+          "skewness": 0.78,
+          "underprediction_rate": 2.2,
+          "overprediction_rate": 97.8
+        },
+        "training_time_seconds": 0.16
+      },
+      "artifact_path": "C:\\Users\\Dheeraj\\OneDrive\\Desktop\\aids project\\models\\saved\\arima_MH017_pm25.joblib",
+      "predictions_sample": [
+        26.3,
+        24.2,
+        22.8,
+        22.0,
+        21.5,
+        21.1,
+        20.9
+      ]
+    },
+    "prophet": {
+      "version_id": 23,
+      "version_tag": "v1.0-Prophet",
+      "metrics": {
+        "mae": 8.62,
+        "rmse": 9.47,
+        "mape": 94.71,
+        "coverage_95": 100.0,
+        "sample_count": 45,
+        "residual_summary": {
+          "mean": -8.58,
+          "std": 4.02,
+          "skewness": 0.66,
+          "underprediction_rate": 2.2,
+          "overprediction_rate": 97.8
+        },
+        "training_time_seconds": 0.31
+      },
+      "artifact_path": "C:\\Users\\Dheeraj\\OneDrive\\Desktop\\aids project\\models\\saved\\prophet_MH017_pm25.joblib",
+      "predictions_sample": [
+        20.4,
+        20.5,
+        18.4,
+        19.3,
+        18.6,
+        21.0,
+        21.6
+      ]
+    },
+    "lstm": {
+      "version_id": 24,
+      "version_tag": "v1.0-PyTorchLSTM",
+      "metrics": {
+        "mae": 13.69,
+        "rmse": 14.24,
+        "mape": 145.52,
+        "coverage_95": 100.0,
+        "sample_count": 45,
+        "residual_summary": {
+          "mean": -13.69,
+          "std": 3.91,
+          "skewness": 0.6,
+          "underprediction_rate": 0.0,
+          "overprediction_rate": 100.0
+        },
+        "training_time_seconds": 10.43
+      },
+      "artifact_path": "C:\\Users\\Dheeraj\\OneDrive\\Desktop\\aids project\\models\\saved\\lstm_MH017_pm25.joblib",
+      "predictions_sample": [
+        29.6,
+        26.0,
+        23.0,
+        23.2,
+        23.7,
+        25.4,
+        25.4
+      ]
+    }
+  },
+  "mape_unsuitability_note": "Notice: MAPE is provided for standard convention, but can be mathematically fragile when actual pollutant concentrations approach near-zero (e.g. during heavy monsoon downpours). MAE and RMSE represent the primary evaluation metrics."
+}

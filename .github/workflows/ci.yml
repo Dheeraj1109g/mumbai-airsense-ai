@@ -1,0 +1,53 @@
+name: Mumbai AirSense AI CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv and dependencies
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          uv venv backend/.venv --python 3.11
+          uv pip install --python backend/.venv/bin/python -r backend/requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
+
+      - name: Run Alembic Migrations and Database Seeding
+        run: |
+          export PYTHONPATH=backend
+          backend/.venv/bin/alembic upgrade head
+          backend/.venv/bin/python scripts/seed_database.py
+
+      - name: Run Pytest Test Suite
+        run: |
+          export PYTHONPATH=backend
+          backend/.venv/bin/pytest backend/tests -v
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --prefix frontend
+
+      - name: Build Next.js
+        run: npm run build --prefix frontend
