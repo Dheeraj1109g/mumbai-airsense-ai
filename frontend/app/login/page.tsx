@@ -121,7 +121,7 @@ export default function LoginPage() {
           >
             <div className="flex items-center gap-2">
               <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
-              <span>Continue as Demo Citizen (Aarav Mehta)</span>
+              <span>Continue as Demo Citizen (Dheeraj)</span>
             </div>
             <span className="text-[10px] font-mono text-neutral-500 border border-neutral-800 px-1.5 py-0.5 rounded">
               Fill

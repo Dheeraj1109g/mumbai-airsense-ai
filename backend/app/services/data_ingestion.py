@@ -93,6 +93,26 @@ def seed_monitoring_stations(db: Session) -> int:
     logger.info(f"Seeded {count} new monitoring stations.")
     return count
 
+def seed_demo_user(db: Session) -> None:
+    """Ensure the default demo citizen account (Dheeraj) exists with pre-configured credentials."""
+    from app.models.user import User
+    demo = db.query(User).filter(User.email == "demo@airsense.in").first()
+    if not demo:
+        demo = User(
+            full_name="Dheeraj",
+            email="demo@airsense.in",
+            password_hash=User.hash_password("airsense2026"),
+            preferred_station="MH005",
+            is_active=True
+        )
+        db.add(demo)
+        db.commit()
+        logger.info("Seeded default demo citizen account (Dheeraj).")
+    else:
+        demo.full_name = "Dheeraj"
+        db.commit()
+        logger.info("Updated demo citizen full_name to Dheeraj.")
+
 def ingest_cpcb_datasets(
     db: Session,
     station_day_csv: str,

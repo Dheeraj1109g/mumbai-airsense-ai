@@ -13,7 +13,7 @@ backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "bac
 sys.path.insert(0, backend_dir)
 
 from app.db.session import SessionLocal, engine, Base
-from app.services.data_ingestion import seed_monitoring_stations, ingest_cpcb_datasets
+from app.services.data_ingestion import seed_monitoring_stations, ingest_cpcb_datasets, seed_demo_user
 
 def main():
     print("==================================================")
@@ -41,6 +41,11 @@ def main():
         print(f"   Import status: {res['status']}")
         print(f"   Records imported: {res['records_imported']:,}")
         print(f"   Records skipped (duplicates): {res['records_skipped']:,}")
+
+        # 3. Seed default demo citizen user
+        print("\n3. Seeding default demo citizen account (Dheeraj)...")
+        seed_demo_user(db)
+        print("   Demo user verified: Dheeraj (demo@airsense.in)")
 
         print("\nDatabase initialization complete!")
     finally:
