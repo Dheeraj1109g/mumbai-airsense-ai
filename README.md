@@ -97,7 +97,16 @@ python scripts/seed_database.py
 ```
 
 #### 4. Start the FastAPI Backend Server
+
+**Option A — Directly from project root (Recommended):**
 ```bash
+uvicorn app.main:app --app-dir backend --host 127.0.0.1 --port 8000 --reload
+```
+*(Or run `npm run dev:backend`)*
+
+**Option B — From inside the backend directory:**
+```bash
+cd backend
 uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 - 🌐 **Backend API**: [http://127.0.0.1:8000](http://127.0.0.1:8000)
