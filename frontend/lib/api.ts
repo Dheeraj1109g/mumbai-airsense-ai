@@ -13,36 +13,55 @@ import {
   SystemHealthResponse
 } from "@/types";
 
+const DEFAULT_PROD_BACKEND = "https://mumbai-airsense-ai.onrender.com";
+
 const getBaseUrl = () => {
+  const envBackend = (
+    process.env.NEXT_PUBLIC_API_BACKEND_URL ||
+    (process.env.NODE_ENV === "production" ? DEFAULT_PROD_BACKEND : "")
+  )?.replace(/\/+$/, "");
+
   if (typeof window !== "undefined") {
-    // Client-side: use relative path rewritten by Next.js
+    // Client-side: communicate directly with backend to avoid edge proxy hops and cold-start timeouts
+    if (envBackend) {
+      return `${envBackend}/api/v1`;
+    }
+    // Local fallback: relative path rewritten by Next.js
     return "/api/v1";
   }
-  // Server-side: prefer INTERNAL_API_URL, fallback to NEXT_PUBLIC_API_BACKEND_URL, then local
+
+  // Server-side (SSR / ISR)
   if (process.env.INTERNAL_API_URL) {
     return process.env.INTERNAL_API_URL.replace(/\/+$/, "");
   }
-  if (process.env.NEXT_PUBLIC_API_BACKEND_URL) {
-    const backend = process.env.NEXT_PUBLIC_API_BACKEND_URL.replace(/\/+$/, "");
-    return `${backend}/api/v1`;
+  if (envBackend) {
+    return `${envBackend}/api/v1`;
   }
   return "http://127.0.0.1:8000/api/v1";
 };
 
-
 async function fetchJson<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${getBaseUrl()}${endpoint}`;
-  const res = await fetch(url, {
-    cache: "no-store",
-    ...options,
-  });
+  try {
+    const res = await fetch(url, {
+      cache: "no-store",
+      ...options,
+    });
 
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`API Error [${res.status}] ${endpoint}: ${errorText}`);
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`API Error [${res.status}] ${endpoint}: ${errorText}`);
+    }
+
+    return res.json();
+  } catch (err: any) {
+    if (err.message && err.message.includes("Failed to fetch")) {
+      throw new Error(
+        "Unable to connect to air quality telemetry service. If the server was sleeping (Render spin-down), please wait ~30 seconds and click Retry."
+      );
+    }
+    throw err;
   }
-
-  return res.json();
 }
 
 export const api = {
