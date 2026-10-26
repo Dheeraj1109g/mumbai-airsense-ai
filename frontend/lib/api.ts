@@ -18,9 +18,17 @@ const getBaseUrl = () => {
     // Client-side: use relative path rewritten by Next.js
     return "/api/v1";
   }
-  // Server-side: use direct backend port
-  return process.env.INTERNAL_API_URL || "http://127.0.0.1:8000/api/v1";
+  // Server-side: prefer INTERNAL_API_URL, fallback to NEXT_PUBLIC_API_BACKEND_URL, then local
+  if (process.env.INTERNAL_API_URL) {
+    return process.env.INTERNAL_API_URL.replace(/\/+$/, "");
+  }
+  if (process.env.NEXT_PUBLIC_API_BACKEND_URL) {
+    const backend = process.env.NEXT_PUBLIC_API_BACKEND_URL.replace(/\/+$/, "");
+    return `${backend}/api/v1`;
+  }
+  return "http://127.0.0.1:8000/api/v1";
 };
+
 
 async function fetchJson<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${getBaseUrl()}${endpoint}`;
